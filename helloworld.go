@@ -1,12 +1,20 @@
 package main
 
 import (
-    "fmt"
+    "html/template"
     "net/http"
+    "fmt"
 )
 
+var index = template.Must(template.ParseFiles(
+    "templates/_base.html",
+    "templates/index.html",
+))
+
 func hello(w http.ResponseWriter, req *http.Request) {
-    fmt.Fprintln(w, "HELLO WORLD FROM A LISTENER")
+    if err := index.Execute(w, nil); err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 }
 
 func main() {
